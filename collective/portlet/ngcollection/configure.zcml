@@ -22,9 +22,7 @@
     <plone:portlet
         name="collective.portlet.ngcollection.NGCollection"
         interface=".ngcollection.INGCollection"
-        assignment=".ngcollection.Assignment"
-        view_permission="zope2.View"
-        edit_permission="cmf.ManagePortal"
+        assignment=".ngcollection.Assignment"        
         renderer=".ngcollection.Renderer"
         addview=".ngcollection.AddForm"
         editview=".ngcollection.EditForm"
