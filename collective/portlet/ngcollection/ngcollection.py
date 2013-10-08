@@ -4,6 +4,11 @@ from zope.formlib import form
 from zope.interface import implements
 from zope.component import queryAdapter
 
+try:
+    from z3c.form import field
+except ImportError:
+    field = None
+
 from plone.portlets.interfaces import IPortletDataProvider
 from plone.portlet.collection import collection as base
 from plone.app.form.widgets.uberselectionwidget import UberSelectionWidget
@@ -14,6 +19,7 @@ from Products.Five.browser.pagetemplatefile import ViewPageTemplateFile
 from collective.portlet.ngcollection.manager import getPortletTemplateManagers
 from collective.portlet.ngcollection import NGCollectionMessageFactory as _
 from collective.portlet.ngcollection.interfaces import IPortletTemplateManager
+
 
 class INGCollection(base.ICollectionPortlet):
     """A portlet
@@ -30,7 +36,7 @@ class INGCollection(base.ICollectionPortlet):
         required=False,
         default=u"",
         vocabulary='collective.portlet.ngcollection.PortletTemplates')
-    
+
     show_more_label = schema.TextLine(
         title=_(u"Show More Label"),
         description=_(u"Label for Show More link"),
@@ -46,18 +52,13 @@ class Assignment(base.Assignment):
     """
 
     implements(INGCollection)
-    
+
     template = u""
     show_more_label = u""
 
-    def __init__(self, header=u"", target_collection=None, limit=None,
-                 random=False, show_more=True, show_dates=False,
-                 template=u"", show_more_label=u""):
-        super(Assignment, self).__init__(header=header, limit=limit,
-            target_collection=target_collection, random=random,
-            show_more=show_more, show_dates=show_dates)
-        self.template = template
-        self.show_more_label = show_more_label
+    def __init__(self, **kwargs):
+        for name, value in kwargs.items():
+            setattr(self, name, value)
 
 
 class Renderer(base.Renderer):
@@ -69,21 +70,22 @@ class Renderer(base.Renderer):
     """
 
     _template = ViewPageTemplateFile('ngcollection.pt')
-    
+
     def show_more_label(self):
         return self.data.show_more_label or u"More&hellip;"
-    
+
     def render(self):
         template = self._template
         path = self.data.template
         if path:
             for manager in getPortletTemplateManagers(self.data):
                 if manager.hasTemplate(path):
-                    if not hasattr(manager.getTemplate(path),'__of__'):
-                        return manager.getTemplate(path)(self) # for Plone 4
+                    if not hasattr(manager.getTemplate(path), '__of__'):
+                        return manager.getTemplate(path)(self)  # for Plone 4
                     template = manager.getTemplate(path).__of__(self)
                     break
         return template()
+
 
 class AddForm(base.AddForm):
     """Portlet add form.
@@ -94,7 +96,8 @@ class AddForm(base.AddForm):
     """
     form_fields = form.Fields(INGCollection)
     form_fields['target_collection'].custom_widget = UberSelectionWidget
-    
+    fields = field and field.Fields(INGCollection)
+
     label = _(u"Add NG Collection Portlet")
     description = _(u"This portlet extends standard plone collection portlet "
                     u"with two more extra fields: view_name and "
@@ -102,6 +105,7 @@ class AddForm(base.AddForm):
 
     def create(self, data):
         return Assignment(**data)
+
 
 class EditForm(base.EditForm):
     """Portlet edit form.
@@ -111,7 +115,8 @@ class EditForm(base.EditForm):
     """
     form_fields = form.Fields(INGCollection)
     form_fields['target_collection'].custom_widget = UberSelectionWidget
-    
+    fields = field and field.Fields(INGCollection)
+
     label = _(u"Edit NG Collection Portlet")
     description = _(u"This portlet extends standard plone collection portlet "
                     u"with two more extra fields: view_name and "

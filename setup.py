@@ -1,19 +1,32 @@
 from setuptools import setup, find_packages
 import os
 
-version = '1.2'
+version = '1.4'
 
 setup(name='collective.portlet.ngcollection',
       version=version,
-      description="Extends plone collection portlet in order to allow assigning different views for each newly created portlet through it's edit form",
-      long_description=open("README.txt").read() + "\n" +
-                       open(os.path.join("docs", "HISTORY.txt")).read(),
-      # Get more strings from http://www.python.org/pypi?%3Aaction=list_classifiers
+      description="Extends plone collection portlet in order to allow "
+                  "assigning different views for each newly created "
+                  "portlet through it's edit form",
+      long_description=open("README.rst").read() + "\n" +
+      open(os.path.join("docs", "HISTORY.rst")).read(),
       classifiers=[
-        "Framework :: Plone",
-        "Programming Language :: Python",
-        "Topic :: Software Development :: Libraries :: Python Modules",
-        ],
+          "Environment :: Web Environment",
+          "Framework :: Zope2",
+          "Framework :: Plone",
+          "Framework :: Plone :: 4.0",
+          "Framework :: Plone :: 4.1",
+          "Framework :: Plone :: 4.2",
+          "Framework :: Plone :: 4.3",
+          "Programming Language :: Python",
+          "Development Status :: 5 - Production/Stable",
+          "Intended Audience :: Developers",
+          "Natural Language :: English",
+          "Operating System :: OS Independent",
+          "Topic :: Internet :: WWW/HTTP :: Dynamic Content",
+          "Topic :: Software Development :: Libraries :: Python Modules",
+          "License :: OSI Approved :: GNU General Public License (GPL)",
+      ],
       keywords='plone portlet collection',
       author='Quintagroup',
       author_email='support@quintagroup.com',

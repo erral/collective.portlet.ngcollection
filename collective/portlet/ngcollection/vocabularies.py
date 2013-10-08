@@ -1,7 +1,11 @@
 from zope.interface import implements
 from zope.component import queryUtility
 from zope.component.interfaces import IFactory
-from zope.app.container.interfaces import IAdding
+
+try:
+    from zope.browser.interfaces import IAdding
+except ImportError:
+    from zope.app.container.interfaces import IAdding
 
 try:
     from zope.schema.interfaces import IVocabularyFactory
@@ -35,5 +39,5 @@ class PortletTemplates(object):
         items = []
         for manager in getPortletTemplateManagers(context):
             items.extend([SimpleTerm(value, value, title)
-                for value, title in manager.getTemplatesForVocab()])
+                          for value, title in manager.getTemplatesForVocab()])
         return SimpleVocabulary(items)
